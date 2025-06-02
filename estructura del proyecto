@@ -1,0 +1,14 @@
+BloomEvaluationSystem/
+├── backend/
+│   ├── controller/
+│   │   └── ItemManager.java
+│   └── model/
+│       └── Item.java
+├── frontend/
+│   └── view/
+│       ├── MainView.java
+│       ├── QuestionView.java
+│       └── ResumenView.java
+├── items.txt
+├── Main.java
+└── README.md
