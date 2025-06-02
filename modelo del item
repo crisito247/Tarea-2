@@ -1,0 +1,32 @@
+package backend.model;
+
+import java.util.List;
+
+public class Item {
+    public enum Tipo { SELECCION_MULTIPLE, VERDADERO_FALSO }
+    public enum NivelBloom { RECORDAR, ENTENDER, APLICAR, ANALIZAR, EVALUAR, CREAR }
+
+    private String pregunta;
+    private List<String> opciones;
+    private String respuestaCorrecta;
+    private Tipo tipo;
+    private NivelBloom nivel;
+    private int tiempo;
+
+    public Item(String pregunta, List<String> opciones, String respuestaCorrecta, Tipo tipo, NivelBloom nivel, int tiempo) {
+        this.pregunta = pregunta;
+        this.opciones = opciones;
+        this.respuestaCorrecta = respuestaCorrecta;
+        this.tipo = tipo;
+        this.nivel = nivel;
+        this.tiempo = tiempo;
+    }
+
+    // Getters
+    public String getPregunta() { return pregunta; }
+    public List<String> getOpciones() { return opciones; }
+    public String getRespuestaCorrecta() { return respuestaCorrecta; }
+    public Tipo getTipo() { return tipo; }
+    public NivelBloom getNivel() { return nivel; }
+    public int getTiempo() { return tiempo; }
+}
