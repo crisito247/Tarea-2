@@ -1,0 +1,83 @@
+Sistema de Evaluación por Taxonomía de Bloom
+============================================
+
+Paradigmas de Programación – Tarea 2
+Lenguaje: Java 17+
+Interfaz: Java Swing
+Patrón de diseño: Observador (Notificación-Suscripción)
+Modularización: backend y frontend
+
+Descripción del sistema
+------------------------
+Este sistema permite aplicar evaluaciones basadas en la Taxonomía de Bloom, usando ítems de tipo selección múltiple y verdadero/falso, cargados desde un archivo externo. El sistema permite:
+
+- Carga de ítems desde archivo con validación de formato
+- Navegación por la prueba (avanzar y retroceder)
+- Conservación de respuestas ingresadas
+- Envío de respuestas y cálculo de resultados
+- Revisión individual de respuestas
+- Visualización de porcentajes correctos por nivel de Bloom y tipo de ítem
+
+Estructura del proyecto
+------------------------
+BloomEvaluationSystem/
+├── backend/
+│   ├── controller/
+│   │   └── ItemManager.java
+│   └── model/
+│       └── Item.java
+├── frontend/
+│   └── view/
+│       ├── MainView.java
+│       ├── QuestionView.java
+│       └── ResumenView.java
+├── items.txt
+├── Main.java
+└── README.txt
+
+Formato del archivo de ítems (items.txt)
+-----------------------------------------
+Cada línea corresponde a un ítem con el siguiente formato:
+
+<pregunta>|<opciones separadas por ;>|<respuesta correcta>|<tipo>|<nivel Bloom>|<tiempo estimado>
+
+Ejemplo:
+¿Qué es Java?|Un lenguaje de programación;Una base de datos;Un sistema operativo|Un lenguaje de programación|SELECCION_MULTIPLE|RECORDAR|30
+La programación orientada a objetos se basa en clases.|Verdadero;Falso|Verdadero|VERDADERO_FALSO|ENTENDER|20
+¿Cuál de estas estructuras permite repetición?|if;while;switch|while|SELECCION_MULTIPLE|APLICAR|40
+
+Tipos de ítem:
+- SELECCION_MULTIPLE
+- VERDADERO_FALSO
+
+Niveles de Bloom:
+- RECORDAR
+- ENTENDER
+- APLICAR
+- ANALIZAR
+- EVALUAR
+- CREAR
+
+Instrucciones de ejecución
+---------------------------
+1. Compilar el proyecto
+   Requiere JDK 17+
+   Puede compilarse desde un IDE (Eclipse, IntelliJ) o consola:
+   javac Main.java
+
+2. Ejecutar:
+   java Main
+
+3. Uso:
+   - Carga un archivo .txt con los ítems
+   - Haz clic en "Iniciar prueba"
+   - Navega con los botones “Anterior” y “Siguiente”
+   - Al finalizar, selecciona “Enviar respuestas” para ver los resultados
+   - Revisa cada respuesta una por una
+
+Supuestos
+---------
+- Las preguntas no se repiten en años consecutivos (pero esta versión no valida duplicados)
+- Las respuestas son sensibles a mayúsculas/minúsculas
+- El formato del archivo se valida parcialmente (se ignoran líneas mal formadas)
+- La revisión de respuestas se basa en coincidencia exacta con la solución esperada
