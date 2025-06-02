@@ -1,0 +1,107 @@
+package backend.controller;
+
+import backend.model.Item;
+import backend.model.Item.NivelBloom;
+import backend.model.Item.Tipo;
+
+import java.io.*;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class ItemManager extends Observable {
+    private List<Item> items = new ArrayList<>();
+    private Map<Integer, String> respuestasUsuario = new HashMap<>();
+    private int indiceActual = 0;
+    private boolean enRevision = false;
+
+    public void cargarItemsDesdeArchivo(File archivo) throws IOException {
+        items.clear();
+        respuestasUsuario.clear();
+        indiceActual = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] partes = linea.split("\\|");
+                if (partes.length != 6) continue;
+
+                String pregunta = partes[0];
+                List<String> opciones = Arrays.asList(partes[1].split(";"));
+                String correcta = partes[2];
+                Tipo tipo = Tipo.valueOf(partes[3]);
+                NivelBloom nivel = NivelBloom.valueOf(partes[4]);
+                int tiempo = Integer.parseInt(partes[5]);
+
+                items.add(new Item(pregunta, opciones, correcta, tipo, nivel, tiempo));
+            }
+        }
+
+        setChanged();
+        notifyObservers();
+    }
+
+    public int getCantidad() { return items.size(); }
+    public int getTiempoTotal() { return items.stream().mapToInt(Item::getTiempo).sum(); }
+    public Item getActual() { return items.get(indiceActual); }
+    public int getIndice() { return indiceActual; }
+    public boolean esPrimero() { return indiceActual == 0; }
+    public boolean esUltimo() { return indiceActual == items.size() - 1; }
+    public boolean estaEnRevision() { return enRevision; }
+
+    public void avanzar() {
+        if (!esUltimo()) indiceActual++;
+        setChanged(); notifyObservers();
+    }
+
+    public void retroceder() {
+        if (!esPrimero()) indiceActual--;
+        setChanged(); notifyObservers();
+    }
+
+    public void responderActual(String respuesta) {
+        respuestasUsuario.put(indiceActual, respuesta);
+    }
+
+    public String getRespuestaUsuario(int index) {
+        return respuestasUsuario.getOrDefault(index, null);
+    }
+
+    public boolean esCorrecta(int index) {
+        String userResp = respuestasUsuario.get(index);
+        return userResp != null && userResp.equals(items.get(index).getRespuestaCorrecta());
+    }
+
+    public void iniciarRevision() {
+        enRevision = true;
+        indiceActual = 0;
+        setChanged(); notifyObservers();
+    }
+
+    public Map<NivelBloom, Integer[]> resumenPorNivel() {
+        Map<NivelBloom, Integer[]> map = new EnumMap<>(NivelBloom.class);
+        for (Item item : items) {
+            NivelBloom nivel = item.getNivel();
+            int index = items.indexOf(item);
+            boolean correcta = esCorrecta(index);
+            map.putIfAbsent(nivel, new Integer[]{0, 0});
+            Integer[] val = map.get(nivel);
+            if (correcta) val[0]++;
+            val[1]++;
+        }
+        return map;
+    }
+
+    public Map<Tipo, Integer[]> resumenPorTipo() {
+        Map<Tipo, Integer[]> map = new EnumMap<>(Tipo.class);
+        for (Item item : items) {
+            Tipo tipo = item.getTipo();
+            int index = items.indexOf(item);
+            boolean correcta = esCorrecta(index);
+            map.putIfAbsent(tipo, new Integer[]{0, 0});
+            Integer[] val = map.get(tipo);
+            if (correcta) val[0]++;
+            val[1]++;
+        }
+        return map;
+    }
+}
